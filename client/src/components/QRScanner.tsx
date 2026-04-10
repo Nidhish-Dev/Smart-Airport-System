@@ -38,11 +38,11 @@ export default function QRScanner({ onScanSuccess }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div id="qr-reader" className="rounded-2xl overflow-hidden" />
+      <div id="qr-reader" className="rounded-3xl overflow-hidden border border-slate-200 bg-slate-50" />
       {!scanning && (
         <button
           onClick={() => setScanning(true)}
-          className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-semibold"
+          className="btn btn-primary mt-6 w-full py-3"
         >
           Scan Again
         </button>

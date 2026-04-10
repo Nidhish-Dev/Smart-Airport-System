@@ -32,17 +32,17 @@ export default function CheckinPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-bold text-center mb-10">Operations - QR Check-in</h1>
+      <h1 className="text-4xl font-semibold text-center mb-10 text-slate-950">Operations - QR Check-in</h1>
       
-      <div className="bg-gray-900 rounded-3xl p-10">
+      <div className="card rounded-3xl p-10">
         <QRScanner onScanSuccess={handleScan} />
       </div>
 
-      {loading && <p className="text-center mt-6 text-yellow-400">Processing check-in...</p>}
+      {loading && <p className="text-center mt-6 text-slate-600">Processing check-in...</p>}
 
       {result && (
         <div className={`mt-8 p-6 rounded-2xl text-center text-lg font-semibold ${
-          result.success ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
+          result.success ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
         }`}>
           {result.message}
         </div>

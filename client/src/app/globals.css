@@ -1,5 +1,48 @@
 @import "tailwindcss";
 
-body {
-  font-family: 'Inter', system_ui, sans-serif;
+@layer base {
+  :root {
+    color-scheme: light;
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-slate-950 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  ::selection {
+    background: #0f172a;
+    color: #ffffff;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-full font-semibold transition duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+  }
+
+  .btn-primary {
+    @apply bg-slate-950 text-white hover:bg-slate-800;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-slate-950 border border-slate-300 hover:bg-slate-50;
+  }
+
+  .card {
+    @apply bg-white border border-slate-200 shadow-sm;
+  }
 }

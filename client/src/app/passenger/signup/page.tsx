@@ -32,53 +32,53 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-800 p-8 rounded-2xl w-full max-w-md">
-        <h1 className="text-2xl font-bold text-white mb-6 text-center">Passenger Signup</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="card p-10 rounded-[2rem] w-full max-w-md">
+        <h1 className="text-3xl font-semibold text-slate-950 mb-8 text-center">Passenger Signup</h1>
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-300 mb-2">Name</label>
+            <label className="block text-sm text-slate-600 mb-2">Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950"
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-2">Email</label>
+            <label className="block text-sm text-slate-600 mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950"
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-2">Phone Number</label>
+            <label className="block text-sm text-slate-600 mb-2">Phone Number</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
+            className="btn btn-primary w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
-        <p className="text-gray-400 text-center mt-4">
-          Already have an account? <a href="/passenger/login" className="text-blue-400 hover:underline">Login</a>
+        <p className="text-center text-slate-500 mt-6">
+          Already have an account? <a href="/passenger/login" className="text-slate-950 underline">Login</a>
         </p>
       </div>
     </div>

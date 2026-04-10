@@ -45,27 +45,30 @@ export default function OperationsDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-bold">Operations Dashboard</h1>
-        <Link href="/operations/checkin" className="bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-2xl font-semibold">
-          Open QR Scanner for Check-in
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+          <h1 className="text-4xl font-semibold text-slate-950">Operations Dashboard</h1>
+          <p className="text-slate-600 mt-2">Monitor check-ins and open the scanner for live boarding.</p>
+        </div>
+        <Link href="/operations/checkin" className="btn btn-primary px-8 py-4">
+          Open QR Scanner
         </Link>
       </div>
 
-      <div className="bg-gray-900 rounded-3xl p-8">
-        <h2 className="text-2xl mb-6">Checked-in Passengers</h2>
+      <div className="card rounded-3xl p-8">
+        <h2 className="text-2xl mb-6 text-slate-950">Checked-in Passengers</h2>
         {checkedInTickets.length === 0 ? (
-          <p className="text-gray-400">No check-ins yet. Use the QR scanner to check in passengers.</p>
+          <p className="text-slate-500">No check-ins yet. Use the QR scanner to check in passengers.</p>
         ) : (
           <div className="space-y-4">
             {checkedInTickets.map((t, i) => (
-              <div key={t._id || i} className="flex justify-between bg-gray-800 p-5 rounded-2xl">
+              <div key={t._id || i} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
                 <div>
-                  <p className="font-semibold">{t.passengerName || 'Passenger'}</p>
-                  <p className="text-sm text-gray-400">Ticket: {t.ticketId}</p>
-                  <p className="text-sm text-gray-400">Flight: {t.flight?.flightNumber}</p>
+                  <p className="font-semibold text-slate-950">{t.passengerName || 'Passenger'}</p>
+                  <p className="text-sm text-slate-500">Ticket: {t.ticketId}</p>
+                  <p className="text-sm text-slate-500">Flight: {t.flight?.flightNumber}</p>
                 </div>
-                <div className="text-right text-emerald-400">
+                <div className="text-right text-emerald-600 font-semibold self-center">
                   ✅ Checked In
                 </div>
               </div>
