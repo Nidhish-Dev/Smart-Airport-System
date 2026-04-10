@@ -10,23 +10,27 @@ const connectDB = require('./config/db');
 const app = express();
 const server = http.createServer(app);
 
+// CORS configuration
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:3000'].filter(Boolean);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS policy: origin ${origin} not allowed`));
+  },
+  credentials: true,
+};
+
 // Socket.io setup with proper CORS
 const io = new Server(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+  cors: corsOptions,
 });
 
 // Connect to MongoDB
 connectDB();
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Make io accessible in all controllers (important for real-time check-in)
