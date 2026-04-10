@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Flight } from '@/types';
+import { API_URLS } from '@/lib/api';
 
 export default function BookingPage() {
   const { flightId } = useParams();
@@ -21,8 +22,8 @@ export default function BookingPage() {
     const fetchData = async () => {
       try {
         const [flightRes, ticketsRes] = await Promise.all([
-          axios.get(`http://localhost:8000/api/flights/${flightId}`),
-          axios.get('http://localhost:8000/api/tickets')
+          axios.get(`${API_URLS.flights}/${flightId}`),
+          axios.get(API_URLS.tickets.all)
         ]);
         setFlight(flightRes.data);
         setTickets(ticketsRes.data.filter((t: any) => t.flight._id === flightId));
@@ -58,7 +59,7 @@ export default function BookingPage() {
     }
 
     try {
-      const res = await axios.post('http://localhost:8000/api/tickets/book', {
+      const res = await axios.post(API_URLS.tickets.book, {
         ...form,
         flightId
       }, {

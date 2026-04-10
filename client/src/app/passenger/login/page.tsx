@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { API_URLS } from '@/lib/api';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/login', formData);
+      const response = await axios.post(API_URLS.auth.login, formData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       router.push('/passenger');

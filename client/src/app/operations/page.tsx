@@ -5,6 +5,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { getSocket } from '@/lib/socket';
 import { Ticket } from '@/types';
+import { API_URLS } from '@/lib/api';
 
 export default function OperationsDashboard() {
   const [checkedInTickets, setCheckedInTickets] = useState<Ticket[]>([]);
@@ -14,7 +15,7 @@ export default function OperationsDashboard() {
     // Load existing checked-in tickets
     const loadCheckedInTickets = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/tickets');
+        const res = await axios.get(API_URLS.tickets.all);
         const checkedIn = res.data.filter((t: any) => t.checkedIn);
         setCheckedInTickets(checkedIn);
       } catch (err) {

@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Ticket, Flight } from '@/types';
+import { API_URLS } from '@/lib/api';
 
-export default function PassengerPortal() {
+export default function PassengerPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [flights, setFlights] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,8 +29,8 @@ export default function PassengerPortal() {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const [ticketsRes, flightsRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/tickets/my', config),
-          axios.get('http://localhost:8000/api/flights')
+          axios.get(API_URLS.tickets.my, config),
+          axios.get(API_URLS.flights)
         ]);
         setTickets(ticketsRes.data);
         setFlights(flightsRes.data);
@@ -72,7 +73,7 @@ export default function PassengerPortal() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {flights.map((flight) => (
             <Link key={flight._id} href={`/passenger/booking/${flight._id}`}>
-              <div className="bg-gray-900 p-6 rounded-2xl hover:bg-gray-800 transition border border-gray-700">
+              <div className="bg-gray-900 p-6 rounded-2xl hover:bg-gray-800 transition border border-gray-700 cursor-pointer">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-gray-400">{flight.origin} → {flight.destination}</p>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import QRScanner from '@/components/QRScanner';
 import axios from 'axios';
+import { API_URLS } from '@/lib/api';
 
 export default function CheckinPage() {
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
@@ -11,7 +12,7 @@ export default function CheckinPage() {
   const handleScan = async (qrData: string) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:8000/api/checkin/scan', { qrData });
+      const res = await axios.post(`${API_URLS.checkin}/scan`, { qrData });
       
       setResult({
         success: true,

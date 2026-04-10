@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { API_URLS } from '@/lib/api';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function Signup() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/api/auth/signup', formData);
+      await axios.post(API_URLS.auth.signup, formData);
       alert('Signup successful! Please login.');
       router.push('/passenger/login');
     } catch (error: any) {

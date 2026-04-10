@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Flight } from '@/types';
+import { API_URLS } from '@/lib/api';
 
 export default function AdminPanel() {
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -28,8 +29,8 @@ export default function AdminPanel() {
     const fetchData = async () => {
       try {
         const [flightsRes, ticketsRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/flights'),
-          axios.get('http://localhost:8000/api/tickets')
+          axios.get(API_URLS.flights),
+          axios.get(API_URLS.tickets.all)
         ]);
         setFlights(flightsRes.data);
         setCheckedInTickets(ticketsRes.data.filter((t: any) => t.checkedIn));
@@ -56,7 +57,7 @@ export default function AdminPanel() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/flights', {
+      await axios.post(API_URLS.flights, {
         ...newFlight,
         capacity: Number(newFlight.capacity),
       });
@@ -73,7 +74,7 @@ export default function AdminPanel() {
       });
 
       // Refresh flight list
-      const res = await axios.get('http://localhost:8000/api/flights');
+      const res = await axios.get(API_URLS.flights);
       setFlights(res.data);
     } catch (err: any) {
       console.error(err);
@@ -87,11 +88,11 @@ export default function AdminPanel() {
     if (!editingFlight) return;
 
     try {
-      await axios.put(`http://localhost:8000/api/flights/${editingFlight._id}`, editingFlight);
+      await axios.put(`${API_URLS.flights}/${editingFlight._id}`, editingFlight);
       setSuccess('Flight updated successfully!');
       setEditingFlight(null);
       // Refresh flight list
-      const res = await axios.get('http://localhost:8000/api/flights');
+      const res = await axios.get(API_URLS.flights);
       setFlights(res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update flight');
@@ -264,7 +265,7 @@ export default function AdminPanel() {
                 type="datetime-local"
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
                 value={new Date(editingFlight.departureTime).toISOString().slice(0, 16)}
-                onChange={(e) => setEditingFlight({ ...editingFlight, departureTime: new Date(e.target.value) })}
+                onChange={(e) => setEditingFlight({ ...editingFlight, departureTime: new Date(e.target.value).toISOString() })}
                 required
               />
             </div>
@@ -275,7 +276,7 @@ export default function AdminPanel() {
                 type="datetime-local"
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
                 value={new Date(editingFlight.arrivalTime).toISOString().slice(0, 16)}
-                onChange={(e) => setEditingFlight({ ...editingFlight, arrivalTime: new Date(e.target.value) })}
+                onChange={(e) => setEditingFlight({ ...editingFlight, arrivalTime: new Date(e.target.value).toISOString() })}
                 required
               />
             </div>
