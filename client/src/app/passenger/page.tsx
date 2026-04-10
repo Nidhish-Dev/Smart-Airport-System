@@ -3,34 +3,69 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Ticket, Flight } from '@/types';
 
 export default function PassengerPortal() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [flights, setFlights] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (!token) {
+      router.push('/passenger/login');
+      return;
+    }
+    setUser(JSON.parse(userData || '{}'));
+
     const fetchData = async () => {
       try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
         const [ticketsRes, flightsRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/tickets'),
+          axios.get('http://localhost:8000/api/tickets/my', config),
           axios.get('http://localhost:8000/api/flights')
         ]);
         setTickets(ticketsRes.data);
         setFlights(flightsRes.data);
       } catch (err) {
         console.error(err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          router.push('/passenger/login');
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/passenger/login');
+  };
+
+  if (loading) return <div className="text-center py-12">Loading...</div>;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-bold mb-8">Passenger Portal</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Passenger Portal</h1>
+        <div className="flex items-center gap-4">
+          <span className="text-gray-300">Welcome, {user?.name}</span>
+          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+            Logout
+          </button>
+        </div>
+      </div>
 
       <div className="mb-12">
         <h2 className="text-2xl font-semibold mb-6">Available Flights</h2>
@@ -49,7 +84,7 @@ export default function PassengerPortal() {
                   </div>
                 </div>
                 <div className="mt-4 text-sm text-gray-400">
-                  Gate: <span className="font-medium text-white">{flight.gate}</span> | Seats: {flight.availableSeats}/{flight.capacity}
+                  Seats: {flight.availableSeats}/{flight.capacity}
                 </div>
               </div>
             </Link>
@@ -64,7 +99,7 @@ export default function PassengerPortal() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {tickets.map((ticket) => (
-              <div key={ticket._id} className="bg-gray-900 p-6 rounded-2xl border border-gray-700">
+              <div key={ticket._id} onClick={() => setSelectedTicket(ticket)} className="bg-gray-900 p-6 rounded-2xl border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
                 <p className="font-mono text-lg font-bold text-emerald-400">{ticket.ticketId}</p>
                 <p className="text-xl mt-2">{ticket.passengerName}</p>
                 <p className="text-gray-400">{ticket.flight.origin} → {ticket.flight.destination}</p>
@@ -79,6 +114,20 @@ export default function PassengerPortal() {
           </div>
         )}
       </div>
+
+      {selectedTicket && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-8 rounded-3xl max-w-md w-full mx-4">
+            <h2 className="text-2xl font-bold mb-6 text-center">Ticket QR Code</h2>
+            <p className="text-center mb-4">Ticket ID: <span className="font-mono font-bold">{selectedTicket.ticketId}</span></p>
+            <QRCodeDisplay qrData={selectedTicket.qrData} />
+            <p className="mt-4 text-sm text-gray-400 text-center">Gate: <span className="font-medium text-white">{selectedTicket.flight.gate}</span></p>
+            <button onClick={() => setSelectedTicket(null)} className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

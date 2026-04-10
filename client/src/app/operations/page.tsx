@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 import { getSocket } from '@/lib/socket';
 import { Ticket } from '@/types';
 
@@ -10,11 +11,30 @@ export default function OperationsDashboard() {
   const [socketConnected, setSocketConnected] = useState(false);
 
   useEffect(() => {
+    // Load existing checked-in tickets
+    const loadCheckedInTickets = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/api/tickets');
+        const checkedIn = res.data.filter((t: any) => t.checkedIn);
+        setCheckedInTickets(checkedIn);
+      } catch (err) {
+        console.error('Failed to load checked-in tickets:', err);
+      }
+    };
+
+    loadCheckedInTickets();
+
+    // Set up socket for real-time updates
     const socket = getSocket();
 
     socket.on('connect', () => setSocketConnected(true));
     socket.on('ticket-checked-in', (data: any) => {
-      setCheckedInTickets(prev => [data, ...prev]);
+      setCheckedInTickets(prev => {
+        // Avoid duplicates
+        const exists = prev.some(t => t._id === data._id);
+        if (exists) return prev;
+        return [data, ...prev];
+      });
     });
 
     return () => {
@@ -32,16 +52,17 @@ export default function OperationsDashboard() {
       </div>
 
       <div className="bg-gray-900 rounded-3xl p-8">
-        <h2 className="text-2xl mb-6">Recently Checked-in Passengers (Real-time)</h2>
+        <h2 className="text-2xl mb-6">Checked-in Passengers</h2>
         {checkedInTickets.length === 0 ? (
-          <p className="text-gray-400">No check-ins yet. Use the QR scanner on another device.</p>
+          <p className="text-gray-400">No check-ins yet. Use the QR scanner to check in passengers.</p>
         ) : (
           <div className="space-y-4">
             {checkedInTickets.map((t, i) => (
-              <div key={i} className="flex justify-between bg-gray-800 p-5 rounded-2xl">
+              <div key={t._id || i} className="flex justify-between bg-gray-800 p-5 rounded-2xl">
                 <div>
                   <p className="font-semibold">{t.passengerName || 'Passenger'}</p>
                   <p className="text-sm text-gray-400">Ticket: {t.ticketId}</p>
+                  <p className="text-sm text-gray-400">Flight: {t.flight?.flightNumber}</p>
                 </div>
                 <div className="text-right text-emerald-400">
                   ✅ Checked In

@@ -11,7 +11,7 @@ export default function CheckinPage() {
   const handleScan = async (qrData: string) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/checkin/scan', { qrData });
+      const res = await axios.post('http://localhost:8000/api/checkin/scan', { qrData });
       
       setResult({
         success: true,
